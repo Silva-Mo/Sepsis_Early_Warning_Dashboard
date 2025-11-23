@@ -1,9 +1,11 @@
 import '../css/styles.css';
 import Chart from 'chart.js/auto';
+import translations from './translations.js';
 
 // --- STATE ---
 let patientList = []; // Will hold patients from the imported file
 let hrChart; // To hold the chart instance
+let currentLanguage = localStorage.getItem('language') || 'en'; // Default to English
 
 // --- DOM ELEMENT SELECTORS ---
 const elements = {
@@ -36,8 +38,65 @@ const elements = {
   importStatus: document.getElementById('import-status'),
   // Patient List
   patientListCard: document.getElementById('patient-list-card'),
-  patientSelectorContainer: document.getElementById('patient-selector-container')
+  patientSelectorContainer: document.getElementById('patient-selector-container'),
+  // Language Toggle
+  languageToggle: document.getElementById('language-toggle')
 };
+
+// --- LANGUAGE FUNCTIONS ---
+
+/**
+ * Translates all elements with data-i18n attribute
+ */
+function translatePage() {
+  const lang = currentLanguage;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  
+  // Translate all elements with data-i18n attribute
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      element.textContent = translations[lang][key];
+    }
+  });
+  
+  // Update chart if it exists
+  if (hrChart) {
+    hrChart.data.datasets[0].label = translations[lang].heartRateTrend;
+    hrChart.update();
+  }
+  
+  // Save language preference
+  localStorage.setItem('language', lang);
+}
+
+/**
+ * Toggles between English and Arabic
+ */
+function toggleLanguage() {
+  currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
+  translatePage();
+  
+  // Re-populate patient selector if patients are loaded
+  if (patientList.length > 0) {
+    populatePatientSelector();
+  }
+}
+
+/**
+ * Gets translated text for a given key
+ */
+function t(key, replacements = {}) {
+  let text = translations[currentLanguage][key] || key;
+  
+  // Replace placeholders like {count}, {message}
+  Object.keys(replacements).forEach(placeholder => {
+    text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+  });
+  
+  return text;
+}
 
 // --- FUNCTIONS ---
 
@@ -89,16 +148,22 @@ function updateDashboard(patient) {
   elements.statusCard.className = 'card'; // Reset classes
   if (score >= 2) {
     elements.statusCard.classList.add('status-alert');
-    elements.statusText.textContent = 'Sepsis Alert!';
-    elements.statusAdvice.textContent = 'High risk of poor outcome. Immediate medical intervention required.';
+    elements.statusText.textContent = t('statusAlert');
+    elements.statusAdvice.textContent = t('adviceAlert');
+    elements.statusText.setAttribute('data-i18n', 'statusAlert');
+    elements.statusAdvice.setAttribute('data-i18n', 'adviceAlert');
   } else if (score === 1) {
     elements.statusCard.classList.add('status-watch');
-    elements.statusText.textContent = 'At-Risk / Watch';
-    elements.statusAdvice.textContent = 'Patient shows some warning signs. Monitor closely.';
+    elements.statusText.textContent = t('statusAtRisk');
+    elements.statusAdvice.textContent = t('adviceAtRisk');
+    elements.statusText.setAttribute('data-i18n', 'statusAtRisk');
+    elements.statusAdvice.setAttribute('data-i18n', 'adviceAtRisk');
   } else {
     elements.statusCard.classList.add('status-normal');
-    elements.statusText.textContent = 'Normal';
-    elements.statusAdvice.textContent = 'All vital signs and labs are within normal ranges.';
+    elements.statusText.textContent = t('statusNormal');
+    elements.statusAdvice.textContent = t('adviceNormal');
+    elements.statusText.setAttribute('data-i18n', 'statusNormal');
+    elements.statusAdvice.setAttribute('data-i18n', 'adviceNormal');
   }
 
   // Update Heart Rate Chart
@@ -115,6 +180,7 @@ function updateChart(data) {
 
   if (hrChart) {
     hrChart.data.datasets[0].data = data;
+    hrChart.data.datasets[0].label = t('heartRateTrend');
     hrChart.update();
   } else {
     hrChart = new Chart(ctx, {
@@ -123,7 +189,7 @@ function updateChart(data) {
         labels: labels,
         datasets: [
           {
-            label: 'Heart Rate Trend (bpm)',
+            label: t('heartRateTrend'),
             data: data,
             fill: false,
             borderColor: 'rgb(75, 192, 192)',
@@ -155,7 +221,7 @@ function populatePatientSelector() {
 
   const label = document.createElement('label');
   label.setAttribute('for', 'patient-select');
-  label.textContent = 'Select a patient case to view:';
+  label.textContent = t('selectPatientCase');
 
   const select = document.createElement('select');
   select.id = 'patient-select';
@@ -183,7 +249,7 @@ function populatePatientSelector() {
 function handleFileImport() {
   const file = elements.importFile.files[0];
   if (!file) {
-    setImportStatus('Please select a file first.', 'error');
+    setImportStatus(t('selectFileFirst'), 'error');
     return;
   }
 
@@ -193,11 +259,11 @@ function handleFileImport() {
     try {
       const data = JSON.parse(e.target.result);
       if (!data.patients || !Array.isArray(data.patients)) {
-        throw new Error('Invalid JSON format. Expected a "patients" array.');
+        throw new Error(t('invalidFormat'));
       }
 
       patientList = data.patients;
-      setImportStatus(`Successfully imported ${patientList.length} patients.`, 'success');
+      setImportStatus(t('importSuccess', { count: patientList.length }), 'success');
       populatePatientSelector();
 
       // Load the first patient by default
@@ -206,13 +272,13 @@ function handleFileImport() {
       }
     } catch (error) {
       console.error('Failed to parse JSON:', error);
-      setImportStatus(`Error: ${error.message}`, 'error');
+      setImportStatus(t('importError', { message: error.message }), 'error');
       patientList = [];
     }
   };
 
   reader.onerror = () => {
-    setImportStatus('Failed to read the file.', 'error');
+    setImportStatus(t('failedToRead'), 'error');
   };
 
   reader.readAsText(file);
@@ -233,6 +299,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set up the import button
   elements.importBtn.addEventListener('click', handleFileImport);
 
+  // Set up language toggle button
+  elements.languageToggle.addEventListener('click', toggleLanguage);
+
   // Initialize chart with empty data
   updateChart([0, 0, 0, 0, 0]);
+
+  // Load saved language preference and translate page
+  translatePage();
 });

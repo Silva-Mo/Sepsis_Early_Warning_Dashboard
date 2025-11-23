@@ -1,60 +1,193 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
 :root {
-  --bg-color: #f4f7f9;
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-color: #f0f4f8;
   --card-bg: #ffffff;
-  --text-color: #333;
-  --primary-color: #007bff;
-  --border-color: #e0e0e0;
-  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --text-color: #2d3748;
+  --text-light: #718096;
+  --primary-color: #667eea;
+  --primary-dark: #5568d3;
+  --secondary-color: #764ba2;
+  --border-color: #e2e8f0;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.12);
 
-  --status-normal-bg: #e7f5ec;
-  --status-normal-text: #1e8755;
-  --status-watch-bg: #fff8e1;
-  --status-watch-text: #f59c00;
-  --status-alert-bg: #fbe9e7;
-  --status-alert-text: #d9534f;
+  --status-normal-bg: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+  --status-normal-text: #047857;
+  --status-normal-border: #10b981;
+  --status-watch-bg: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  --status-watch-text: #92400e;
+  --status-watch-border: #f59e0b;
+  --status-alert-bg: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  --status-alert-text: #ffffff;
+  --status-alert-border: #dc2626;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: var(--bg-color);
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  background: var(--bg-color);
   color: var(--text-color);
   margin: 0;
-  padding: 20px;
-  box-sizing: border-box; /* Ensures padding doesn't cause overflow */
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Animated gradient background for the header area */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 280px;
+  background: var(--bg-gradient);
+  z-index: -1;
+  opacity: 0.95;
 }
 
 header {
   text-align: center;
-  margin-bottom: 30px;
+  padding: 40px 20px 60px;
+  position: relative;
+  color: white;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 header h1 {
-  margin: 0;
-  color: var(--primary-color);
+  margin: 0 0 10px 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: -0.5px;
+}
+
+header p {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+.header-content {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.language-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.language-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.language-toggle:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.language-toggle:active {
+  transform: translateY(0);
 }
 
 /* Replaced .dashboard-grid with centering on main */
 main {
   max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  margin: -40px auto 40px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+  overflow-x: hidden;
 }
 
 .card {
-  background-color: var(--card-bg);
-  border-radius: 8px;
-  padding: 20px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
 }
 
 .card h2 {
   margin-top: 0;
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 10px;
-  margin-bottom: 15px;
-  font-size: 1.2rem;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  position: relative;
+  letter-spacing: -0.3px;
+}
+
+.card h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
 }
 
 .card ul {
@@ -64,164 +197,381 @@ main {
 }
 
 .card ul li {
-  padding: 8px 0;
+  padding: 12px 0;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
-  flex-wrap: wrap; /* <-- FIX 1: Allows text to wrap on small screens */
-  gap: 5px; /* Adds a small gap if it wraps */
+  flex-wrap: wrap;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 6px;
+}
+
+.card ul li:hover {
+  background-color: #f8fafc;
 }
 
 .card ul li:last-child {
   border-bottom: none;
 }
 
+.card ul li strong {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.card ul li span:not(.indicator) {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
 /* Styles for full-width cards */
 #status-card,
 #patient-list-card {
   text-align: center;
-  margin-bottom: 20px; /* Add spacing between cards */
+  margin-bottom: 24px;
+  border: 2px solid transparent;
+}
+
+#status-card {
+  padding: 32px 24px;
 }
 
 #status-card h2 {
-  border: none;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.9;
+  margin-bottom: 16px;
+}
+
+#status-card h2::after {
+  display: none;
 }
 
 #status-text {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin: 10px 0;
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 16px 0;
+  letter-spacing: -1px;
 }
 
 #status-advice {
-  font-size: 1rem;
-  color: #555;
+  font-size: 1.1rem;
+  opacity: 0.95;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .status-normal {
-  background-color: var(--status-normal-bg);
+  background: var(--status-normal-bg);
   color: var(--status-normal-text);
+  border-color: var(--status-normal-border);
 }
+
 .status-watch {
-  background-color: var(--status-watch-bg);
+  background: var(--status-watch-bg);
   color: var(--status-watch-text);
+  border-color: var(--status-watch-border);
 }
+
 .status-alert {
-  background-color: var(--status-alert-bg);
+  background: var(--status-alert-bg);
   color: var(--status-alert-text);
+  border-color: var(--status-alert-border);
 }
 
 /* qSOFA Card */
 .score-container {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
+
 .score-circle {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-size: 3rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 10px;
+  margin: 0 auto 16px;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  position: relative;
+  transition: transform 0.3s ease;
 }
+
+.score-circle:hover {
+  transform: scale(1.05);
+}
+
+.score-circle::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  opacity: 0.3;
+  filter: blur(8px);
+  z-index: -1;
+}
+
+#qsofa-card .card ul li {
+  padding: 12px 0;
+  font-size: 0.95rem;
+}
+
 .indicator {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background-color: #ccc;
+  background-color: #e2e8f0;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .indicator.positive {
-  background-color: var(--status-alert-text);
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 /* Patient List Card */
 #patient-list-card h2 {
-  border: none;
+  margin-bottom: 20px;
 }
+
+#patient-list-card h2::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 #patient-selector-container label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--text-color);
 }
+
 #patient-select {
   width: 100%;
-  max-width: 400px; /* Stop it from being too wide */
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid var(--border-color);
+  max-width: 450px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
   font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inter', sans-serif;
   background-color: #fff;
-  margin: 0 auto; /* Center the select box */
+  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-color);
+}
+
+#patient-select:hover {
+  border-color: var(--primary-color);
+}
+
+#patient-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 /* This is the flexbox wrapper that centers the content cards */
 .card-deck {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* This is the magic property! */
+  justify-content: center;
   gap: 20px;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Styles for cards inside the new deck */
 .card-deck .card {
-  flex-basis: 300px; /* Each card will be at least 300px wide */
-  flex-grow: 1; /* They can grow to fill space */
-  max-width: 450px; /* But won't get too wide */
-  min-width: 0; /* Allows card to shrink below 300px if needed */
+  flex-basis: 300px;
+  flex-grow: 1;
+  max-width: 450px;
+  min-width: 0;
+  width: 100%;
 }
 
 /* Updated Controls Card */
 .controls .import-controls {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .controls input[type='file'] {
-  font-family: 'Roboto', sans-serif;
-  border: 1px solid var(--border-color);
-  padding: 8px;
-  border-radius: 5px;
+  font-family: 'Inter', sans-serif;
+  border: 2px dashed var(--border-color);
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+.controls input[type='file']:hover {
+  border-color: var(--primary-color);
+  background: #f1f5f9;
 }
 
 .controls button {
-  padding: 10px 15px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
   color: white;
-  background-color: var(--primary-color);
-  transition: background-color 0.2s;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
+
 .controls button:hover {
-  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
+
+.controls button:active {
+  transform: translateY(0);
+}
+
 .import-status {
-  margin-top: 10px;
-  font-size: 0.9rem;
+  margin-top: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
+
 .import-status.success {
   color: var(--status-normal-text);
+  background: #d1fae5;
 }
+
 .import-status.error {
-  color: var(--status-alert-text);
+  color: #991b1b;
+  background: #fee2e2;
 }
 
 .chart-container {
-  margin-top: 20px;
-  position: relative; /* <-- FIX 2: Added for chart.js */
-  width: 100%; /* <-- FIX 2: Ensures container scales */
+  margin-top: 24px;
+  position: relative;
+  width: 100%;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
 }
 
 .student-name {
-  color: #d9534f;
-  font-weight: bold;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* RTL Support for Arabic */
+[dir='rtl'] {
+  font-family: 'Cairo', 'Inter', sans-serif;
+}
+
+[dir='rtl'] .card ul li {
+  flex-direction: row-reverse;
+}
+
+[dir='rtl'] .language-toggle {
+  right: auto;
+  left: 20px;
+}
+
+[dir='rtl'] #qsofa-card ul li {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+[dir='rtl'] .import-controls {
+  text-align: right;
+}
+
+[dir='rtl'] .card h2::after {
+  left: auto;
+  right: 0;
+}
+
+[dir='rtl'] #patient-list-card h2::after {
+  left: auto;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+/* Responsive adjustments for header */
+@media (max-width: 768px) {
+  body::before {
+    height: 320px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .language-toggle {
+    position: static;
+    margin: 0 auto 20px;
+    display: inline-flex;
+  }
+
+  header {
+    padding: 20px 20px 40px;
+  }
+
+  main {
+    margin-top: -20px;
+  }
+
+  #status-text {
+    font-size: 2.5rem;
+  }
+
+  .card-deck .card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.75rem;
+  }
+
+  #status-text {
+    font-size: 2rem;
+  }
+
+  .score-circle {
+    width: 80px;
+    height: 80px;
+    font-size: 2.5rem;
+  }
 }
